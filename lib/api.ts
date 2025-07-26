@@ -1,4 +1,4 @@
-import { LoginData } from '@/types/types';
+import { Brand, CreateBrandData, LoginData } from '@/types/types';
 import axios from 'axios';
 import toast from 'react-hot-toast';
 
@@ -54,7 +54,51 @@ api.interceptors.request.use(
     }
   }
 
+// Brands API
+export const brandsAPI = {
+  getAllBrands: async (): Promise<Brand[]> => {
+    const response = await api.get('/brands');
+    return response.data;
+  },
+  getBrandById: async (id: string): Promise<Brand> => {
+    const response = await api.get(`/brands/${id}`);
+    return response.data;
+  },
+  createBrand: async (data: CreateBrandData): Promise<Brand> => {
+    const response = await api.post('/brands', data);
+    return response.data;
+  },
+  updateBrand: async (id: string, data: CreateBrandData): Promise<Brand> => {
+    const response = await api.put(`/brands/${id}`, data);
+    return response.data;
+  },
+  deleteBrand: async (id: string): Promise<Brand> => {
+    const response = await api.delete(`/brands/${id}`);
+    return response.data;
+  },
+  generateResponse: async (brandId: string): Promise<Response> => {
+    const response = await api.post(`/brands/${brandId}/responses`);
+    return response.data;
+  },
+}
 
+// Responses API
+export const responsesAPI = {
+    rate: async (responseId: string, value: boolean): Promise<Response> => {
+      const response = await api.put(`/responses/${responseId}/rating`, { value });
+      return response.data;
+    },
+    
+    removeRating: async (responseId: string): Promise<Response> => {
+      const response = await api.delete(`/responses/${responseId}/rating`);
+      return response.data;
+    },
+    
+    getById: async (responseId: string): Promise<Response> => {
+      const response = await api.get(`/responses/${responseId}`);
+      return response.data;
+    },
+  };
 
 
 export default api
