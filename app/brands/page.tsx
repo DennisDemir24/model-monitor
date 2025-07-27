@@ -10,6 +10,7 @@ import Link from 'next/link'
 import { Building, Edit2, MessageSquare, Plus, Search, ThumbsUp, Trash2 } from 'lucide-react'
 import LoadingSpinner from '@/components/LoadingSpinner'
 import CreateBrandModal from '@/components/brands/CreateBrandModal'
+import EditBrandModal from '@/components/brands/EditBrandModal'
 
 const BrandsPage = () => {
   const [brands, setBrands] = useState<Brand[]>([])
@@ -44,14 +45,6 @@ const BrandsPage = () => {
   }
 
   const handleDelete = async (brand: Brand) => {
-    /* if (
-        !confirm(
-          `Are you sure you want to delete "${brand.name}"? This will also delete all associated responses and cannot be undone.`
-        )
-      ) {
-        return
-      } */
-
     setDeleteLoading(brand.id)
     try {
       await brandsAPI.deleteBrand(brand.id)
@@ -144,12 +137,15 @@ const BrandsPage = () => {
                             {brand.name}
                           </h3>
                           <div className='flex items-center space-x-2'>
-                            <Link
-                              href={`/brands/${brand.id}/edit`}
-                              className='text-gray-400 hover:text-gray-600'
-                            >
-                              <Edit2 className='h-4 w-4' />
-                            </Link>
+                            <EditBrandModal
+                              brand={brand}
+                              trigger={
+                                <button className='text-gray-400 hover:text-gray-600'>
+                                  <Edit2 className='h-4 w-4' />
+                                </button>
+                              }
+                              onBrandUpdated={loadBrands}
+                            />
                             <button
                               onClick={() => handleDelete(brand)}
                               disabled={deleteLoading === brand.id}
