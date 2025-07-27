@@ -60,7 +60,15 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({children}) => {
             const response = await authAPI.login(data)
             setUser(response.user)
             toast.success('Login successful')
-            router.push('/dashboard')
+            
+            // Check if there's a redirect path stored
+            const redirectPath = sessionStorage.getItem('redirectAfterLogin')
+            if (redirectPath) {
+                sessionStorage.removeItem('redirectAfterLogin')
+                router.push(redirectPath)
+            } else {
+                router.push('/dashboard')
+            }
         } catch (error: any) {
             const message = error.response?.data?.error || 'Login failed'
             toast.error(message)
